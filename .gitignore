@@ -1,31 +1,37 @@
+# -----------------------------------------------------------------------------
+# Python
+# -----------------------------------------------------------------------------
+
 __pycache__/
 *.py[cod]
 *.so
+*.egg-info/
 
+# Virtual environments
 .venv/
 venv/
 env/
 
+# Environment variables
 .env
+.env.*
+
+# Testing & Coverage
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
+coverage.xml
 htmlcov/
 
+# Build
 build/
 dist/
-*.egg-info/
 
 # IDE
 .idea/
 .vscode/
 
-# Python
-.venv/
-__pycache__/
-*.pyc
-
-# OS
+# Operating System
 .DS_Store
 Thumbs.db
