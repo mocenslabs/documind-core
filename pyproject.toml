@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "documind-core"
+version = "0.1.0"
+description = "Core engine for AI-powered repository analysis."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "DocuMind" }]
+dependencies = [
+    "pydantic-settings>=2.0,<3.0",
+    "structlog>=24.0,<26.0",
+    "typer>=0.12,<1.0",
+]
+
+[project.scripts]
+documind = "app.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_configs = true
+files = ["app", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[project.optional-dependencies]
+dev = [
+    "black>=24.0,<26.0",
+    "mypy>=1.10,<2.0",
+    "pre-commit>=3.0,<5.0",
+    "pytest>=8.0,<9.0",
+    "ruff>=0.6,<1.0",
+]
