@@ -2,50 +2,40 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any
-
 from app.application.analyze.models import AnalysisResult
+from app.application.discovery.service import DiscoveryService
+from app.application.knowledge.service import KnowledgeService
+from app.domain.repository.interfaces import RepositoryLoader
+from app.domain.repository.value_objects import RepositorySnapshotRequest
 
 
 class AnalyzeRepositoryService:
-    """
-    Coordinates the complete repository analysis pipeline.
-
-    This service orchestrates the existing application services without
-    containing business rules.
-    """
+    """Coordinate the complete repository analysis pipeline."""
 
     def __init__(
         self,
-        repository_loader: Any,
-        discovery_service: Any,
-        rules_service: Any,
-        knowledge_service: Any,
+        repository_loader: RepositoryLoader,
+        discovery_service: DiscoveryService,
+        knowledge_service: KnowledgeService,
     ) -> None:
         self._repository_loader = repository_loader
         self._discovery_service = discovery_service
-        self._rules_service = rules_service
         self._knowledge_service = knowledge_service
 
-    def analyze(self, repository_path: Path) -> AnalysisResult:
-        """Execute the complete repository analysis pipeline."""
+    def analyze(
+        self,
+        request: RepositorySnapshotRequest,
+    ) -> AnalysisResult:
+        """Analyze a repository."""
 
-        repository = self._repository_loader.load(repository_path)
+        repository = self._repository_loader.load(request)
 
         facts = self._discovery_service.discover(repository)
 
-        rules = self._rules_service.evaluate(facts)
-
-        knowledge = self._knowledge_service.build(
-            repository=repository,
-            facts=facts,
-            rules=rules,
-        )
+        knowledge = self._knowledge_service.build(facts)
 
         return AnalysisResult(
             repository=repository,
             facts=facts,
-            rules=rules,
             knowledge=knowledge,
         )
