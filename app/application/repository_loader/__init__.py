@@ -1,6 +1,9 @@
-"""Application contracts for repository loading."""
+"""Application models for repository loading."""
 
-from app.application.repository_loader.models import RepositorySnapshotRequestModel
-from app.application.repository_loader.service import RepositoryLoaderService
+from app.application.repository_loader.models import (
+    RepositorySnapshotRequestModel,
+)
 
-__all__ = ["RepositoryLoaderService", "RepositorySnapshotRequestModel"]
+__all__ = [
+    "RepositorySnapshotRequestModel",
+]

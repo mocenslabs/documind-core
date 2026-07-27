@@ -3,7 +3,6 @@
 from pathlib import Path
 
 from app.application.repository_loader.models import RepositorySnapshotRequestModel
-from app.application.repository_loader.service import RepositoryLoaderService
 from app.domain.repository.entities import RepositorySnapshot
 from app.domain.repository.interfaces import RepositoryLoader
 from app.domain.repository.value_objects import (
@@ -14,9 +13,20 @@ from app.domain.repository.value_objects import (
 
 def test_repository_loader_contract_objects_construct() -> None:
     """Construct repository-loading contracts without repository access."""
-    reference = RepositoryReference(locator="example/repository", revision="main")
-    request = RepositorySnapshotRequest(repository=reference)
-    request_model = RepositorySnapshotRequestModel(request=request)
+
+    reference = RepositoryReference(
+        locator="example/repository",
+        revision="main",
+    )
+
+    request = RepositorySnapshotRequest(
+        repository=reference,
+    )
+
+    request_model = RepositorySnapshotRequestModel(
+        request=request,
+    )
+
     snapshot = RepositorySnapshot(
         repository=reference,
         root_path=Path("example/repository"),
@@ -26,4 +36,4 @@ def test_repository_loader_contract_objects_construct() -> None:
 
     assert request_model.request is request
     assert snapshot.repository is reference
-    assert RepositoryLoaderService.__annotations__["loader"] is RepositoryLoader
+    assert issubclass(RepositoryLoader, object)

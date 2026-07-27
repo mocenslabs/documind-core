@@ -4,6 +4,7 @@ from app.application.analyze.models import AnalysisResult
 from app.application.report.service import RepositoryReportService
 from app.domain.repository.entities import RepositorySnapshot
 from app.domain.repository.value_objects import RepositoryReference
+from app.domain.scanner.entities import ScanDocument
 
 
 def test_build_report() -> None:
@@ -20,6 +21,12 @@ def test_build_report() -> None:
 
     analysis = AnalysisResult(
         repository=repository,
+        scanned_documents=(
+            ScanDocument(
+                path=PurePosixPath("README.md"),
+                content="# Documind",
+            ),
+        ),
         facts=[],
         knowledge=[],
     )
