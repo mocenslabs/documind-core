@@ -2,4 +2,9 @@
 
 from app.application.knowledge.service import KnowledgeService
 
-__all__ = ["KnowledgeService"]
+from .registry import KnowledgeRegistry
+
+__all__ = [
+    "KnowledgeService",
+    "KnowledgeRegistry",
+]

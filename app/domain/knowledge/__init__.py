@@ -5,6 +5,8 @@ from app.domain.knowledge.entities import (
     Container,
     Framework,
     Knowledge,
+    KnowledgeCandidate,
+    KnowledgeRegistry,
     Technology,
 )
 from app.domain.knowledge.interfaces import KnowledgeEngine
@@ -16,4 +18,11 @@ __all__ = [
     "Knowledge",
     "KnowledgeEngine",
     "Technology",
+    "KnowledgeCandidate",
+    "KnowledgeRegistry",
+    "KnowledgeRelationship",
+    "KnowledgeGraph",
 ]
+
+from .graph import KnowledgeGraph
+from .relationships import KnowledgeRelationship
