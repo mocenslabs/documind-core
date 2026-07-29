@@ -10,6 +10,7 @@ import typer
 from app.application.analyze.service import AnalyzeRepositoryService
 from app.application.discovery.service import DiscoveryService
 from app.application.knowledge.service import KnowledgeService
+from app.application.parser.service import ParserService
 from app.application.report.service import RepositoryReportService
 from app.application.rules.builtin_rules import builtin_rules
 from app.application.rules.service import RuleEngineService
@@ -18,6 +19,7 @@ from app.domain.repository.value_objects import (
     RepositoryReference,
     RepositorySnapshotRequest,
 )
+from app.infrastructure.parser.local_parser import LocalParser
 from app.infrastructure.repository_loader.local_loader import LocalRepositoryLoader
 from app.infrastructure.scanner.local_scanner import LocalScanner
 from app.presentation.console import print_report
@@ -51,7 +53,9 @@ def analyze(path: PathArgument = Path(".")) -> None:
         scanner=LocalScanner(),
     )
 
-    discovery_service = DiscoveryService()
+    parser_service = ParserService(
+        parser=LocalParser(),
+    )
 
     rule_engine = RuleEngineService(
         rules=builtin_rules(),
@@ -64,7 +68,8 @@ def analyze(path: PathArgument = Path(".")) -> None:
     analyzer = AnalyzeRepositoryService(
         repository_loader=loader,
         scanner_service=scanner_service,
-        discovery_service=discovery_service,
+        parser_service=parser_service,
+        discovery_service=DiscoveryService(),
         knowledge_service=knowledge_service,
     )
 

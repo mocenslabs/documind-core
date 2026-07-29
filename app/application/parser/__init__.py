@@ -1,4 +1,4 @@
-"""Parser application."""
+"""Application parser services."""
 
 from .models import ParseResponse
 from .service import ParserService

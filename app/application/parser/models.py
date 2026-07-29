@@ -1,4 +1,4 @@
-"""Application models for parsing."""
+"""Application models for repository parsing."""
 
 from __future__ import annotations
 

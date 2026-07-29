@@ -38,7 +38,10 @@ class LocalParser(Parser):
             title=title,
             plain_text=document.content.strip(),
             sections=tuple(sections),
-            metadata={},
+            metadata=self._extract_metadata(
+                document.path,
+                document.content,
+            ),
         )
 
     def _detect_language(
@@ -128,3 +131,25 @@ class LocalParser(Parser):
             )
 
         return sections
+
+    def _extract_metadata(
+        self,
+        path: PurePosixPath,
+        content: str,
+    ) -> dict[str, str]:
+        """Extract lightweight metadata from a repository document."""
+
+        metadata: dict[str, str] = {}
+
+        metadata["filename"] = path.name
+        metadata["extension"] = path.suffix or "<none>"
+        metadata["size"] = str(len(content))
+
+        lines = content.splitlines()
+
+        metadata["lines"] = str(len(lines))
+
+        if lines:
+            metadata["first_line"] = lines[0].strip()
+
+        return metadata

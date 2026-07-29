@@ -27,6 +27,7 @@ def test_build_report() -> None:
                 content="# Documind",
             ),
         ),
+        parsed_documents=(),
         facts=[],
         knowledge=[],
     )

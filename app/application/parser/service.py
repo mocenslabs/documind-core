@@ -1,31 +1,32 @@
-"""Parser application service."""
+"""Application service for repository parsing."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.domain.parser.entities import ParsedDocument
 from app.domain.parser.interfaces import Parser
-from app.domain.scanner.entities import ScanResult
+from app.domain.scanner.entities import ScanDocument
 
 from .models import ParseResponse
 
 
 @dataclass(frozen=True, slots=True)
 class ParserService:
-    """Coordinate repository document parsing."""
+    """Coordinate repository parsing."""
 
     parser: Parser
 
     def parse(
         self,
-        scan_result: ScanResult,
+        documents: tuple[ScanDocument, ...],
     ) -> ParseResponse:
-        """Parse every scanned document."""
+        """Parse scanned repository documents."""
 
-        documents = tuple(
-            self.parser.parse(document) for document in scan_result.documents
-        )
+        parsed: list[ParsedDocument] = [
+            self.parser.parse(document) for document in documents
+        ]
 
         return ParseResponse(
-            documents=documents,
+            documents=tuple(parsed),
         )
