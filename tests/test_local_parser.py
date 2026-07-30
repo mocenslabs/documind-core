@@ -10,13 +10,7 @@ def test_parse_markdown_document() -> None:
     document = ScanDocument(
         path=PurePosixPath("README.md"),
         content=(
-            "# DocuMind\n"
-            "\n"
-            "Repository analyzer.\n"
-            "\n"
-            "## Installation\n"
-            "\n"
-            "pip install\n"
+            "# DocuMind\n\nRepository analyzer.\n\n## Installation\n\npip install\n"
         ),
     )
 
