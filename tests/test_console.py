@@ -30,6 +30,8 @@ def test_print_report(capsys: CaptureFixture[str]) -> None:
             test_files=3,
         ),
         knowledge=[],
+        observations=(),
+        recommendations=(),
         summary="Repository contains 10 files.",
     )
 

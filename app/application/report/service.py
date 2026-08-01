@@ -5,19 +5,26 @@ from __future__ import annotations
 from pathlib import PurePosixPath
 
 from app.application.analyze.models import AnalysisResult
-from app.application.report.models import (
-    RepositoryReport,
-    RepositoryStatistics,
-)
+
+from .mapper import RepositoryReportMapper
+from .models import RepositoryReport, RepositoryStatistics
 
 
 class RepositoryReportService:
     """Build a human-readable repository report."""
 
+    def __init__(
+        self,
+        mapper: RepositoryReportMapper | None = None,
+    ) -> None:
+        self._mapper = mapper or RepositoryReportMapper()
+
     def build(
         self,
         analysis: AnalysisResult,
     ) -> RepositoryReport:
+        """Build a repository report."""
+
         files: tuple[PurePosixPath, ...] = analysis.repository.files
 
         python_files = [path for path in files if path.suffix == ".py"]
@@ -44,9 +51,8 @@ class RepositoryReportService:
             f"{statistics.markdown_files} Markdown)."
         )
 
-        return RepositoryReport(
-            repository=analysis.repository,
-            statistics=statistics,
-            knowledge=analysis.knowledge,
-            summary=summary,
+        return self._mapper.map(
+            analysis,
+            statistics,
+            summary,
         )

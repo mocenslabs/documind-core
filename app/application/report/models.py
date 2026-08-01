@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.domain.inference.entities import Observation
 from app.domain.knowledge.entities import Knowledge
+from app.domain.recommendation.entities import Recommendation
 from app.domain.repository.entities import RepositorySnapshot
 
 
@@ -25,4 +27,6 @@ class RepositoryReport:
     repository: RepositorySnapshot
     statistics: RepositoryStatistics
     knowledge: list[Knowledge]
+    observations: tuple[Observation, ...]
+    recommendations: tuple[Recommendation, ...]
     summary: str
