@@ -9,8 +9,11 @@ import typer
 
 from app.application.analyze.service import AnalyzeRepositoryService
 from app.application.discovery.service import DiscoveryService
+from app.application.inference.service import InferenceService
 from app.application.knowledge.service import KnowledgeService
 from app.application.parser.service import ParserService
+from app.application.recommendation.rule_engine import RecommendationRuleEngine
+from app.application.recommendation.service import RecommendationService
 from app.application.report.service import RepositoryReportService
 from app.application.rules.builtin_rules import builtin_rules
 from app.application.rules.service import RuleEngineService
@@ -19,6 +22,7 @@ from app.domain.repository.value_objects import (
     RepositoryReference,
     RepositorySnapshotRequest,
 )
+from app.infrastructure.inference.local_engine import LocalInferenceEngine
 from app.infrastructure.parser.local_parser import LocalParser
 from app.infrastructure.repository_loader.local_loader import LocalRepositoryLoader
 from app.infrastructure.scanner.local_scanner import LocalScanner
@@ -65,12 +69,22 @@ def analyze(path: PathArgument = Path(".")) -> None:
         rule_engine=rule_engine,
     )
 
+    inference_service = InferenceService(
+        engine=LocalInferenceEngine(),
+    )
+
+    recommendation_service = RecommendationService(
+        engine=RecommendationRuleEngine(),
+    )
+
     analyzer = AnalyzeRepositoryService(
         repository_loader=loader,
         scanner_service=scanner_service,
         parser_service=parser_service,
         discovery_service=DiscoveryService(),
         knowledge_service=knowledge_service,
+        inference_service=inference_service,
+        recommendation_service=recommendation_service,
     )
 
     request = RepositorySnapshotRequest(
