@@ -30,9 +30,33 @@ def print_report(report: RepositoryReport) -> None:
 
     if report.knowledge:
         for item in report.knowledge:
-            print(f"- {item}")
+            print(f"- {item.name}")
     else:
         print("No knowledge detected.")
+
+    print()
+
+    print("Observations")
+    print("-" * 60)
+
+    if report.observations:
+        for observation in report.observations:
+            print(f"- {observation.title}")
+            print(f"  {observation.description}")
+    else:
+        print("No observations generated.")
+
+    print()
+
+    print("Recommendations")
+    print("-" * 60)
+
+    if report.recommendations:
+        for recommendation in report.recommendations:
+            print(f"- {recommendation.title}")
+            print(f"  {recommendation.description}")
+    else:
+        print("No recommendations generated.")
 
     print()
 
