@@ -10,7 +10,15 @@ import typer
 from app.application.analyze.service import AnalyzeRepositoryService
 from app.application.discovery.service import DiscoveryService
 from app.application.inference.service import InferenceService
-from app.application.knowledge.service import KnowledgeService
+from app.application.knowledge.graph_builder import KnowledgeGraphBuilder
+from app.application.knowledge.registry_service import KnowledgeRegistryService
+from app.application.knowledge.relationship_builder import (
+    KnowledgeRelationshipBuilder,
+)
+from app.application.knowledge.service import (
+    KnowledgeExtractionService,
+    KnowledgeService,
+)
 from app.application.parser.service import ParserService
 from app.application.recommendation.rule_engine import RecommendationRuleEngine
 from app.application.recommendation.service import RecommendationService
@@ -23,6 +31,7 @@ from app.domain.repository.value_objects import (
     RepositorySnapshotRequest,
 )
 from app.infrastructure.inference.local_engine import LocalInferenceEngine
+from app.infrastructure.knowledge.local_extractor import LocalKnowledgeExtractor
 from app.infrastructure.parser.local_parser import LocalParser
 from app.infrastructure.repository_loader.local_loader import LocalRepositoryLoader
 from app.infrastructure.scanner.local_scanner import LocalScanner
@@ -69,6 +78,16 @@ def analyze(path: PathArgument = Path(".")) -> None:
         rule_engine=rule_engine,
     )
 
+    knowledge_extraction_service = KnowledgeExtractionService(
+        extractor=LocalKnowledgeExtractor(),
+    )
+
+    knowledge_registry_service = KnowledgeRegistryService()
+
+    knowledge_relationship_builder = KnowledgeRelationshipBuilder()
+
+    knowledge_graph_builder = KnowledgeGraphBuilder()
+
     inference_service = InferenceService(
         engine=LocalInferenceEngine(),
     )
@@ -83,6 +102,10 @@ def analyze(path: PathArgument = Path(".")) -> None:
         parser_service=parser_service,
         discovery_service=DiscoveryService(),
         knowledge_service=knowledge_service,
+        knowledge_extraction_service=knowledge_extraction_service,
+        knowledge_registry_service=knowledge_registry_service,
+        knowledge_relationship_builder=knowledge_relationship_builder,
+        knowledge_graph_builder=knowledge_graph_builder,
         inference_service=inference_service,
         recommendation_service=recommendation_service,
     )
