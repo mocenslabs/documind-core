@@ -72,3 +72,47 @@ def test_extract_does_not_match_substrings() -> None:
     assert "React" not in values
     assert "Black" not in values
     assert "PostgreSQL" not in values
+
+
+def test_high_confidence_source_for_package_json() -> None:
+    extractor = LocalKnowledgeExtractor()
+
+    parsed = ParsedDocument(
+        path=PurePosixPath("package.json"),
+        language="json",
+        title="package.json",
+        plain_text="""
+        {
+            "dependencies": {
+                "vite": "^8.0.0"
+            }
+        }
+        """,
+        sections=(),
+        metadata={},
+    )
+
+    result = extractor.extract((parsed,))
+
+    vite = next(candidate for candidate in result if candidate.value == "Vite")
+
+    assert vite.confidence == 1.0
+
+
+def test_readme_source_has_high_but_not_maximum_confidence() -> None:
+    extractor = LocalKnowledgeExtractor()
+
+    parsed = ParsedDocument(
+        path=PurePosixPath("README.md"),
+        language="markdown",
+        title="README",
+        plain_text="This project uses Vite.",
+        sections=(),
+        metadata={},
+    )
+
+    result = extractor.extract((parsed,))
+
+    vite = next(candidate for candidate in result if candidate.value == "Vite")
+
+    assert vite.confidence == 0.9

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from pathlib import PurePosixPath
 
 from app.domain.knowledge.entities import KnowledgeCandidate
 from app.domain.knowledge.interfaces import KnowledgeExtractor
@@ -32,7 +33,11 @@ class LocalKnowledgeExtractor(KnowledgeExtractor):
         ("database", r"\bredis\b", "Redis"),
         # Containers
         ("container", r"\bdocker\b", "Docker"),
-        ("container", r"\bdocker[\s_-]?compose\b", "Docker Compose"),
+        (
+            "container",
+            r"\bdocker[\s_-]?compose\b",
+            "Docker Compose",
+        ),
         # CI
         (
             "ci",
@@ -50,6 +55,25 @@ class LocalKnowledgeExtractor(KnowledgeExtractor):
         ("tool", r"\bvite\b", "Vite"),
     )
 
+    _HIGH_CONFIDENCE_FILENAMES = frozenset(
+        {
+            "pyproject.toml",
+            "requirements.txt",
+            "requirements-dev.txt",
+            "package.json",
+            "Dockerfile",
+            "docker-compose.yml",
+            "docker-compose.yaml",
+            "compose.yml",
+            "compose.yaml",
+            "vite.config.js",
+            "vite.config.ts",
+            "vite.config.mjs",
+            "vite.config.cjs",
+            "manage.py",
+        }
+    )
+
     def extract(
         self,
         documents: tuple[ParsedDocument, ...],
@@ -60,6 +84,7 @@ class LocalKnowledgeExtractor(KnowledgeExtractor):
 
         for document in documents:
             text = document.plain_text.lower()
+            confidence = self._confidence_for(document.path)
 
             for category, pattern, value in self._PATTERNS:
                 if not re.search(pattern, text):
@@ -69,9 +94,24 @@ class LocalKnowledgeExtractor(KnowledgeExtractor):
                     KnowledgeCandidate(
                         category=category,
                         value=value,
-                        confidence=1.0,
+                        confidence=confidence,
                         source=document.path,
                     )
                 )
 
         return candidates
+
+    @classmethod
+    def _confidence_for(
+        cls,
+        path: PurePosixPath,
+    ) -> float:
+        """Return extraction confidence based on source quality."""
+
+        if path.name in cls._HIGH_CONFIDENCE_FILENAMES:
+            return 1.0
+
+        if path.name == "README.md":
+            return 0.9
+
+        return 0.7
