@@ -11,20 +11,27 @@ class LocalKnowledgeExtractor(KnowledgeExtractor):
     """Extract basic knowledge from parsed repository documents."""
 
     _PATTERNS: tuple[tuple[str, str, str], ...] = (
+        # Frameworks
         ("framework", "django", "Django"),
+        ("framework", "djangorestframework", "Django REST Framework"),
+        ("framework", "rest_framework", "Django REST Framework"),
         ("framework", "fastapi", "FastAPI"),
         ("framework", "flask", "Flask"),
         ("framework", "vue", "Vue"),
         ("framework", "react", "React"),
         ("framework", "angular", "Angular"),
+        # Databases
         ("database", "postgres", "PostgreSQL"),
         ("database", "postgresql", "PostgreSQL"),
         ("database", "mysql", "MySQL"),
         ("database", "sqlite", "SQLite"),
         ("database", "redis", "Redis"),
+        # Containers
         ("container", "docker", "Docker"),
         ("container", "docker compose", "Docker Compose"),
+        # CI
         ("ci", "github actions", "GitHub Actions"),
+        # Tools
         ("tool", "ruff", "Ruff"),
         ("tool", "black", "Black"),
         ("tool", "pytest", "Pytest"),

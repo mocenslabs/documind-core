@@ -26,7 +26,7 @@ def builtin_composite_rules() -> tuple[
             observation=Observation(
                 code="stack.django.postgresql",
                 title="Django + PostgreSQL stack",
-                description=("Repository appears to use Django with PostgreSQL."),
+                description="Repository appears to use Django with PostgreSQL.",
                 severity=Severity.INFO,
                 priority=Priority.HIGH,
                 actions=(
@@ -54,6 +54,56 @@ def builtin_composite_rules() -> tuple[
                     SuggestedAction(
                         title="Persist database data",
                         description="Verify Docker volumes for PostgreSQL.",
+                    ),
+                ),
+                category=ObservationCategory.DEVOPS,
+                confidence=Confidence.HIGH,
+            ),
+        ),
+        CompositeInferenceRule(
+            nodes=(
+                "Django",
+                "Docker",
+            ),
+            observation=Observation(
+                code="stack.django.docker",
+                title="Containerized Django application",
+                description="Repository appears to run Django in Docker.",
+                severity=Severity.INFO,
+                priority=Priority.MEDIUM,
+                actions=(
+                    SuggestedAction(
+                        title="Review application container",
+                        description="Verify the Django container follows "
+                        "production practices.",
+                    ),
+                ),
+                category=ObservationCategory.DEVOPS,
+                confidence=Confidence.HIGH,
+            ),
+        ),
+        CompositeInferenceRule(
+            nodes=(
+                "Django",
+                "PostgreSQL",
+                "Docker",
+            ),
+            observation=Observation(
+                code="stack.django.postgresql.docker",
+                title="Containerized Django + PostgreSQL stack",
+                description=(
+                    "Repository appears to use Django and PostgreSQL "
+                    "within a Docker-based environment."
+                ),
+                severity=Severity.INFO,
+                priority=Priority.HIGH,
+                actions=(
+                    SuggestedAction(
+                        title="Review production stack",
+                        description=(
+                            "Verify application, database, networking, "
+                            "volumes, and deployment configuration."
+                        ),
                     ),
                 ),
                 category=ObservationCategory.DEVOPS,
