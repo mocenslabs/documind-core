@@ -11,7 +11,7 @@ from app.domain.recommendation.interfaces import RecommendationEngine
 
 @dataclass(frozen=True, slots=True)
 class RecommendationRuleEngine(RecommendationEngine):
-    """Convert observations into recommendations."""
+    """Convert actionable observations into recommendations."""
 
     def recommend(
         self,
@@ -23,19 +23,20 @@ class RecommendationRuleEngine(RecommendationEngine):
         Recommendation,
         ...,
     ]:
-        """Build recommendations."""
+        """Build recommendations from suggested observation actions."""
 
         recommendations: list[Recommendation] = []
 
         for observation in observations:
-            recommendations.append(
-                Recommendation(
-                    id=observation.code,
-                    title=observation.title,
-                    description=observation.description,
-                    observation=observation,
+            for action in observation.actions:
+                recommendations.append(
+                    Recommendation(
+                        id=observation.code,
+                        title=action.title,
+                        description=action.description,
+                        observation=observation,
+                    )
                 )
-            )
 
         return tuple(recommendations)
 

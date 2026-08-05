@@ -2,41 +2,52 @@
 
 from __future__ import annotations
 
+import re
+
 from app.domain.knowledge.entities import KnowledgeCandidate
 from app.domain.knowledge.interfaces import KnowledgeExtractor
 from app.domain.parser.entities import ParsedDocument
 
 
 class LocalKnowledgeExtractor(KnowledgeExtractor):
-    """Extract basic knowledge from parsed repository documents."""
+    """Extract repository knowledge from parsed documents."""
 
     _PATTERNS: tuple[tuple[str, str, str], ...] = (
         # Frameworks
-        ("framework", "django", "Django"),
-        ("framework", "djangorestframework", "Django REST Framework"),
-        ("framework", "rest_framework", "Django REST Framework"),
-        ("framework", "fastapi", "FastAPI"),
-        ("framework", "flask", "Flask"),
-        ("framework", "vue", "Vue"),
-        ("framework", "react", "React"),
-        ("framework", "angular", "Angular"),
+        ("framework", r"\bdjango\b", "Django"),
+        (
+            "framework",
+            r"\bdjango[\s_-]?rest[\s_-]?framework\b|\brest_framework\b",
+            "Django REST Framework",
+        ),
+        ("framework", r"\bfastapi\b", "FastAPI"),
+        ("framework", r"\bflask\b", "Flask"),
+        ("framework", r"\bvue(?:\.js)?\b", "Vue"),
+        ("framework", r"\breact(?:\.js)?\b", "React"),
+        ("framework", r"\bangular(?:\.js)?\b", "Angular"),
         # Databases
-        ("database", "postgres", "PostgreSQL"),
-        ("database", "postgresql", "PostgreSQL"),
-        ("database", "mysql", "MySQL"),
-        ("database", "sqlite", "SQLite"),
-        ("database", "redis", "Redis"),
+        ("database", r"\bpostgres(?:ql)?\b", "PostgreSQL"),
+        ("database", r"\bmysql\b", "MySQL"),
+        ("database", r"\bsqlite\b", "SQLite"),
+        ("database", r"\bredis\b", "Redis"),
         # Containers
-        ("container", "docker", "Docker"),
-        ("container", "docker compose", "Docker Compose"),
+        ("container", r"\bdocker\b", "Docker"),
+        ("container", r"\bdocker[\s_-]?compose\b", "Docker Compose"),
         # CI
-        ("ci", "github actions", "GitHub Actions"),
+        (
+            "ci",
+            r"\bgithub[\s_-]+actions\b",
+            "GitHub Actions",
+        ),
         # Tools
-        ("tool", "ruff", "Ruff"),
-        ("tool", "black", "Black"),
-        ("tool", "pytest", "Pytest"),
-        ("tool", "mypy", "Mypy"),
-        ("tool", "celery", "Celery"),
+        ("tool", r"\bruff\b", "Ruff"),
+        ("tool", r"\bblack\b", "Black"),
+        ("tool", r"\bpytest\b", "Pytest"),
+        ("tool", r"\bmypy\b", "Mypy"),
+        ("tool", r"\bcelery\b", "Celery"),
+        # Runtime / frontend tooling
+        ("runtime", r"\bnode(?:\.js)?\b", "Node.js"),
+        ("tool", r"\bvite\b", "Vite"),
     )
 
     def extract(
@@ -51,7 +62,7 @@ class LocalKnowledgeExtractor(KnowledgeExtractor):
             text = document.plain_text.lower()
 
             for category, pattern, value in self._PATTERNS:
-                if pattern not in text:
+                if not re.search(pattern, text):
                     continue
 
                 candidates.append(

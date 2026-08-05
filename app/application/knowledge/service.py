@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app.application.knowledge.classification import CandidateClassifier
 from app.application.knowledge.deduplication import CandidateDeduplicator
+from app.application.knowledge.knowledge_deduplication import (
+    KnowledgeDeduplicator,
+)
 from app.application.knowledge.models import (
     ClassifiedKnowledgeResponse,
     KnowledgeExtractionResponse,
@@ -23,10 +26,23 @@ class KnowledgeService(KnowledgeEngine):
     """Produce repository knowledge through the configured rule engine."""
 
     rule_engine: RuleEngineService
+    deduplicator: KnowledgeDeduplicator = field(
+        default_factory=KnowledgeDeduplicator,
+    )
 
-    def build(self, facts: Sequence[RawFact]) -> list[Knowledge]:
+    def build(
+        self,
+        facts: Sequence[RawFact],
+    ) -> list[Knowledge]:
         """Build normalized knowledge from the supplied raw facts."""
-        return self.rule_engine.evaluate(facts)
+
+        knowledge = self.rule_engine.evaluate(facts)
+
+        unique = self.deduplicator.deduplicate(
+            tuple(knowledge),
+        )
+
+        return list(unique)
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,7 +50,9 @@ class KnowledgeExtractionService:
     """Coordinate repository knowledge extraction."""
 
     extractor: KnowledgeExtractor
-    deduplicator: CandidateDeduplicator = CandidateDeduplicator()
+    deduplicator: CandidateDeduplicator = field(
+        default_factory=CandidateDeduplicator,
+    )
 
     def extract(
         self,
