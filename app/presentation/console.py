@@ -43,6 +43,10 @@ def print_report(report: RepositoryReport) -> None:
         for observation in report.observations:
             print(f"- {observation.title}")
             print(f"  {observation.description}")
+            print(f"  Category  : {observation.category.name.lower()}")
+            print(f"  Severity  : {observation.severity.name.lower()}")
+            print(f"  Priority  : {observation.priority.name.lower()}")
+            print(f"  Confidence: {observation.confidence.name.lower()}")
     else:
         print("No observations generated.")
 

@@ -74,5 +74,9 @@ def test_print_report(capsys: CaptureFixture[str]) -> None:
     assert "Python" in captured.out
     assert "Observations" in captured.out
     assert "Python detected" in captured.out
+    assert "Category  : architecture" in captured.out
+    assert "Severity  : info" in captured.out
+    assert "Priority  : medium" in captured.out
+    assert "Confidence: certain" in captured.out
     assert "Recommendations" in captured.out
     assert "Review Python runtime" in captured.out
