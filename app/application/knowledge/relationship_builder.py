@@ -15,7 +15,7 @@ class KnowledgeRelationshipBuilder:
     ) -> tuple[KnowledgeRelationship, ...]:
         """Create relationships from a registry."""
 
-        relationships: list[KnowledgeRelationship] = []
+        relationships: set[tuple[str, str, str]] = set()
 
         categories = registry.all()
 
@@ -26,12 +26,19 @@ class KnowledgeRelationshipBuilder:
                         continue
 
                     for other in other_values:
-                        relationships.append(
-                            KnowledgeRelationship(
-                                source=candidate.value,
-                                target=other.value,
-                                relation="related_to",
+                        relationships.add(
+                            (
+                                candidate.value,
+                                other.value,
+                                "related_to",
                             )
                         )
 
-        return tuple(relationships)
+        return tuple(
+            KnowledgeRelationship(
+                source=source,
+                target=target,
+                relation=relation,
+            )
+            for source, target, relation in sorted(relationships)
+        )

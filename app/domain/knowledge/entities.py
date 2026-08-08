@@ -3,6 +3,8 @@
 from dataclasses import dataclass, field
 from pathlib import PurePosixPath
 
+from app.domain.knowledge.evidence import KnowledgeEvidence
+
 
 @dataclass(frozen=True, slots=True)
 class Knowledge:
@@ -40,6 +42,7 @@ class KnowledgeCandidate:
     value: str
     confidence: float
     source: PurePosixPath
+    evidence: KnowledgeEvidence | None = None
 
 
 @dataclass(slots=True)
