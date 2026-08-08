@@ -16,11 +16,8 @@ from app.application.knowledge.service import (
 from app.application.parser.service import ParserService
 from app.application.recommendation.service import RecommendationService
 from app.application.scanner.service import ScannerService
-from app.domain.knowledge.entities import (
-    Knowledge,
-)
+from app.domain.knowledge.entities import Knowledge
 from app.domain.knowledge.graph import KnowledgeGraph
-from app.domain.knowledge.relationships import KnowledgeRelationship
 from app.domain.repository.interfaces import RepositoryLoader
 from app.domain.repository.value_objects import RepositorySnapshotRequest
 
@@ -112,46 +109,6 @@ class AnalyzeRepositoryService:
             observations=inference_result.observations,
             recommendations=recommendation_result.recommendations,
         )
-
-    @staticmethod
-    def _build_knowledge_graph(
-        knowledge: list[Knowledge],
-    ) -> KnowledgeGraph:
-        """Build a graph from normalized knowledge."""
-
-        graph = KnowledgeGraph()
-
-        for item in knowledge:
-            graph.add_node(
-                item.name,
-            )
-
-        for index, source in enumerate(knowledge):
-            for target in knowledge[index + 1 :]:
-                if type(source) is type(target):
-                    continue
-
-                relationship = KnowledgeRelationship(
-                    source=source.name,
-                    target=target.name,
-                    relation="related_to",
-                )
-
-                reverse_relationship = KnowledgeRelationship(
-                    source=target.name,
-                    target=source.name,
-                    relation="related_to",
-                )
-
-                graph.add_relationship(
-                    relationship,
-                )
-
-                graph.add_relationship(
-                    reverse_relationship,
-                )
-
-        return graph
 
     @staticmethod
     def _add_normalized_knowledge(

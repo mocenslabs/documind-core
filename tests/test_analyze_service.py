@@ -7,9 +7,7 @@ from app.application.knowledge.registry_service import KnowledgeRegistryService
 from app.application.knowledge.relationship_builder import (
     KnowledgeRelationshipBuilder,
 )
-from app.application.knowledge.service import (
-    KnowledgeExtractionService,
-)
+from app.application.knowledge.service import KnowledgeExtractionService
 from app.application.parser.service import ParserService
 from app.application.recommendation.models import RecommendationResponse
 from app.application.scanner.service import ScannerService
@@ -134,6 +132,21 @@ class FakeRecommendationService:
         )
 
 
+class FakeKnowledgeExtractor(KnowledgeExtractor):
+    def extract(
+        self,
+        documents: tuple[ParsedDocument, ...],
+    ) -> list[KnowledgeCandidate]:
+        return [
+            KnowledgeCandidate(
+                category="framework",
+                value="Django",
+                confidence=1.0,
+                source=PurePosixPath("README.md"),
+            )
+        ]
+
+
 def test_analyze_pipeline() -> None:
     inference_service = FakeInferenceService()
     recommendation_service = FakeRecommendationService()
@@ -175,18 +188,3 @@ def test_analyze_pipeline() -> None:
     assert inference_service.graph.has_node("Python")
 
     assert recommendation_service.observations == ()
-
-
-class FakeKnowledgeExtractor(KnowledgeExtractor):
-    def extract(
-        self,
-        documents: tuple[ParsedDocument, ...],
-    ) -> list[KnowledgeCandidate]:
-        return [
-            KnowledgeCandidate(
-                category="framework",
-                value="Django",
-                confidence=1.0,
-                source=PurePosixPath("README.md"),
-            )
-        ]
