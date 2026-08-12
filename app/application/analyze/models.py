@@ -23,9 +23,9 @@ class AnalysisResult:
 
     parsed_documents: tuple[ParsedDocument, ...]
 
-    facts: list[RawFact]
+    facts: tuple[RawFact, ...]
 
-    knowledge: list[Knowledge]
+    knowledge: tuple[Knowledge, ...]
 
     observations: tuple[Observation, ...] = ()
 

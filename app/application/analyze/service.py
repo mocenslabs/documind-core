@@ -104,8 +104,8 @@ class AnalyzeRepositoryService:
             repository=repository,
             scanned_documents=scan_result.documents,
             parsed_documents=parse_result.documents,
-            facts=facts,
-            knowledge=knowledge,
+            facts=tuple(facts),
+            knowledge=tuple(knowledge),
             observations=inference_result.observations,
             recommendations=recommendation_result.recommendations,
         )

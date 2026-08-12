@@ -44,8 +44,8 @@ def test_report_mapper() -> None:
         repository=repository,
         scanned_documents=(),
         parsed_documents=(),
-        facts=[],
-        knowledge=[],
+        facts=(),
+        knowledge=(),
         observations=(observation,),
         recommendations=(recommendation,),
     )
@@ -65,7 +65,7 @@ def test_report_mapper() -> None:
 
     assert report.repository == repository
     assert report.statistics == statistics
-    assert report.knowledge == []
+    assert report.knowledge == ()
     assert report.observations == (observation,)
     assert report.recommendations == (recommendation,)
     assert report.summary == ("Repository contains 0 files (0 Python, 0 Markdown).")

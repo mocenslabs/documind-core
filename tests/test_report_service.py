@@ -34,8 +34,8 @@ def test_build_report() -> None:
             ),
         ),
         parsed_documents=(),
-        facts=[],
-        knowledge=[],
+        facts=(),
+        knowledge=(),
     )
 
     report = RepositoryReportService().build(analysis)
@@ -75,8 +75,8 @@ def test_build_report_preserves_observations_and_recommendations() -> None:
         repository=repository,
         scanned_documents=(),
         parsed_documents=(),
-        facts=[],
-        knowledge=[],
+        facts=(),
+        knowledge=(),
         observations=(observation,),
         recommendations=(recommendation,),
     )

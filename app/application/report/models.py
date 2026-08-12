@@ -26,7 +26,7 @@ class RepositoryReport:
 
     repository: RepositorySnapshot
     statistics: RepositoryStatistics
-    knowledge: list[Knowledge]
+    knowledge: tuple[Knowledge, ...]
     observations: tuple[Observation, ...]
     recommendations: tuple[Recommendation, ...]
     summary: str

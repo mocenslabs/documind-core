@@ -54,12 +54,12 @@ def test_print_report(capsys: CaptureFixture[str]) -> None:
             markdown_files=2,
             test_files=3,
         ),
-        knowledge=[
+        knowledge=(
             Technology(
                 name="Python",
                 source=PurePosixPath("pyproject.toml"),
-            )
-        ],
+            ),
+        ),
         observations=(observation,),
         recommendations=(recommendation,),
         summary="Repository contains 10 files.",
