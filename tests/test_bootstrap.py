@@ -3,7 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 from app.application.analyze.service import AnalyzeRepositoryService
-from app.application.bootstrap import create_analyzer
+from app.application.bootstrap import create_analyzer, create_readme_generator
+from app.application.generation.repository_service import (
+    RepositoryReadmeGenerationService,
+)
 from app.domain.repository.value_objects import (
     RepositoryReference,
     RepositorySnapshotRequest,
@@ -62,3 +65,47 @@ def test_create_analyzer_returns_a_new_instance_each_call() -> None:
     second = create_analyzer()
 
     assert first is not second
+
+
+def test_create_readme_generator_returns_configured_service() -> None:
+    generator = create_readme_generator()
+
+    assert isinstance(
+        generator,
+        RepositoryReadmeGenerationService,
+    )
+
+
+def test_create_readme_generator_returns_a_new_instance_each_call() -> None:
+    first = create_readme_generator()
+    second = create_readme_generator()
+
+    assert first is not second
+
+
+def test_create_readme_generator_builds_a_usable_service(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "README.md").write_text(
+        "# Sample\n",
+        encoding="utf-8",
+    )
+
+    generator = create_readme_generator()
+
+    request = RepositorySnapshotRequest(
+        repository=RepositoryReference(
+            locator=str(tmp_path),
+        ),
+    )
+
+    analysis = create_analyzer().analyze(request)
+    result = generator.generate(analysis)
+
+    assert result.content.startswith("# ")
+    assert "## Technologies" in result.content
+    assert "## Frameworks" in result.content
+    assert "## Containers" in result.content
+    assert "## CI Platforms" in result.content
+    assert "## Observations" in result.content
+    assert "## Recommendations" in result.content

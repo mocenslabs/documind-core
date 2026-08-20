@@ -2,6 +2,13 @@
 
 from app.application.analyze.service import AnalyzeRepositoryService
 from app.application.discovery.service import DiscoveryService
+from app.application.generation.context_builder import (
+    ReadmeGenerationContextBuilder,
+)
+from app.application.generation.repository_service import (
+    RepositoryReadmeGenerationService,
+)
+from app.application.generation.service import ReadmeGenerationService
 from app.application.inference.service import InferenceService
 from app.application.knowledge.graph_builder import KnowledgeGraphBuilder
 from app.application.knowledge.registry_service import KnowledgeRegistryService
@@ -18,6 +25,9 @@ from app.application.recommendation.service import RecommendationService
 from app.application.rules.builtin_rules import builtin_rules
 from app.application.rules.service import RuleEngineService
 from app.application.scanner.service import ScannerService
+from app.infrastructure.generation.fake_provider import (
+    FakeReadmeGenerationProvider,
+)
 from app.infrastructure.inference.local_engine import LocalInferenceEngine
 from app.infrastructure.knowledge.local_extractor import LocalKnowledgeExtractor
 from app.infrastructure.parser.local_parser import LocalParser
@@ -78,4 +88,15 @@ def create_analyzer() -> AnalyzeRepositoryService:
         knowledge_graph_builder=knowledge_graph_builder,
         inference_service=inference_service,
         recommendation_service=recommendation_service,
+    )
+
+
+def create_readme_generator() -> RepositoryReadmeGenerationService:
+    """Create the fully configured README generation service."""
+
+    return RepositoryReadmeGenerationService(
+        context_builder=ReadmeGenerationContextBuilder(),
+        generation_service=ReadmeGenerationService(
+            provider=FakeReadmeGenerationProvider(),
+        ),
     )
