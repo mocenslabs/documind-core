@@ -7,7 +7,10 @@ from typing import Annotated
 
 import typer
 
-from app.application.bootstrap import create_analyzer
+from app.application.bootstrap import (
+    create_analyzer,
+    create_readme_generator,
+)
 from app.application.report.service import RepositoryReportService
 from app.domain.repository.value_objects import (
     RepositoryReference,
@@ -55,3 +58,22 @@ def analyze(path: PathArgument = Path(".")) -> None:
 
 if __name__ == "__main__":
     app()
+
+
+@app.command("generate-readme")
+def generate_readme(path: PathArgument = Path(".")) -> None:
+    """Generate a README for a repository."""
+
+    analyzer = create_analyzer()
+    generator = create_readme_generator()
+
+    request = RepositorySnapshotRequest(
+        repository=RepositoryReference(
+            locator=str(path),
+        ),
+    )
+
+    analysis = analyzer.analyze(request)
+    readme = generator.generate(analysis)
+
+    print(readme.content, end="")
