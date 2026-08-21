@@ -56,10 +56,6 @@ def analyze(path: PathArgument = Path(".")) -> None:
     print_report(report)
 
 
-if __name__ == "__main__":
-    app()
-
-
 @app.command("generate-readme")
 def generate_readme(path: PathArgument = Path(".")) -> None:
     """Generate a README for a repository."""
@@ -77,3 +73,7 @@ def generate_readme(path: PathArgument = Path(".")) -> None:
     readme = generator.generate(analysis)
 
     print(readme.content, end="")
+
+
+if __name__ == "__main__":
+    app()
